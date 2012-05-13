@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 # kanji-colorize.py processes KanjiVG data into colored stroke order diagrams
-# Copyright 2012 Cayenne Boyer
+# Copyright 2012 Cayenne Boyer, Roland Sieker
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -42,23 +42,16 @@ image_size = 327
 # rename files to use characters rather than codes; set to True or False
 character_file_names = True
 
-# The palette. Define 33 colours. Why 33? That is said to be the
-# record for kanji not in the ‘Twilight Zone’. See
-# http://nihonshock.com/2009/10/crazy-kanji-highest-stroke-count/ For
-# higher stroke counts the 33 colours are recycled. (I think there
-# aren’t ane with more than 30 in the data base, as of 2012-05-12) Use
-# rgb hexes directly.
+# The palette used for indexed mode. Define your favourite colours
+# here. When fewer colours are defined than are needed, the colours
+# start at the beginnig again.
 stroke_color_palette = [
-    # Basically, we go round and round the color wheel (h) and modify
-    # (s, v) per round.
-    "#bf0909",  "#bfbf09",  "#09bf09",  "#09bfbf",  "#0909bf",  "#bf09bf",
-    "#ff850c",  "#85ff0c",  "#0cff85",  "#0c85ff",  "#850cff",  "#ff0c85",
-    "#bf8f2f",  "#5fbf2f",  "#2fbf8f",  "#2f5fbf",  "#8f2fbf",  "#bf2f5f", 
-    # Three rounds should be good enough for a lot of kanji. Now do
-    # the rest with one round, but mix it up a bit
+    "#bf0909", "#bfbf09", "#09bf09", "#09bfbf", "#0909bf", "#bf09bf",
+    "#ff850c", "#85ff0c", "#0cff85", "#0c85ff", "#850cff", "#ff0c85",
+    "#bf8f2f", "#5fbf2f", "#2fbf8f", "#2f5fbf", "#8f2fbf", "#bf2f5f", 
     "#ff0000", "#ffcc00", "#65ff00", "#00ff66", "#00cbff", "#0000ff",
-    "#cc00ff",  "#ff0066",
-    "#ff6600",  "#cbff00", "#00ff00", "#00ffcb", "#0066ff", "#6500ff",
+    "#cc00ff", "#ff0066",
+    "#ff6600", "#cbff00", "#00ff00", "#00ffcb", "#0066ff", "#6500ff",
     "#ff00cb"
 ]
 
@@ -95,13 +88,11 @@ determine what colors to produce."""
         for i in 2 * range(n):
             yield hsv_to_rgbhexcode(i * angle, saturation, value)
     elif (mode == 'indexed'):
-        # Do it for 2n as for contrast and index, but do it one after
-        # the other. (Although i’m unconvinced that the second round
-        # is necessary at the moment.)
         for i in range(n):
             m = i % len(stroke_color_palette)
             yield stroke_color_palette[m]
         for i in range(n):
+            # Do the loop for 2n, as for the other modes. 
             m = i % len(stroke_color_palette)
             yield stroke_color_palette[m]
     else: # spectrum is default
