@@ -84,7 +84,7 @@ script (available at http://github.com/cayennes/kanji-colorize) with these
 settings: """
     if options.mode:
         note += """
-    mode: """+ options.mode + "\n"
+    mode: """+ options.mode
     note += """
     saturation: """ + `options.saturation` + """
     value: """ + `options.value` + """
