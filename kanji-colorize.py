@@ -27,7 +27,10 @@
 #             which can make it less clear which number goes with which stroke
 # * contrast: maximizes contrast among any group of consecutive strokes, by 
 #             using the golden ratio
-mode = "spectrum"
+# * indexed: Use a fixed palette. Define a color for stroke 1, one for
+#            stroke 2, etc.
+
+mode  = 'indexed'
 
 # saturation and value, as numbers between 0 and 1
 saturation = 0.95
@@ -38,6 +41,27 @@ image_size = 327
 
 # rename files to use characters rather than codes; set to True or False
 character_file_names = True
+
+# The palette. Define 33 colours. Why 33? That is said to be the
+# record for kanji not in the ‘Twilight Zone’. See
+# http://nihonshock.com/2009/10/crazy-kanji-highest-stroke-count/ For
+# higher stroke counts the 33 colours are recycled. (I think there
+# aren’t ane with more than 30 in the data base, as of 2012-05-12) Use
+# rgb hexes directly.
+stroke_color_palette = [
+    # Basically, we go round and round the color wheel (h) and modify
+    # (s, v) per round.
+    "#bf0909",  "#bfbf09",  "#09bf09",  "#09bfbf",  "#0909bf",  "#bf09bf",
+    "#ff850c",  "#85ff0c",  "#0cff85",  "#0c85ff",  "#850cff",  "#ff0c85",
+    "#bf8f2f",  "#5fbf2f",  "#2fbf8f",  "#2f5fbf",  "#8f2fbf",  "#bf2f5f", 
+    # Three rounds should be good enough for a lot of kanji. Now do
+    # the rest with one round, but mix it up a bit
+    "#ff0000", "#ffcc00", "#65ff00", "#00ff66", "#00cbff", "#0000ff",
+    "#cc00ff",  "#ff0066",
+    "#ff6600",  "#cbff00", "#00ff00", "#00ffcb", "#0066ff", "#6500ff",
+    "#ff00cb"
+]
+
 
 # END OF CONFIGURATION VARIABLES
 
@@ -70,6 +94,16 @@ determine what colors to produce."""
         angle = 0.618033988749895 # conjugate of the golden ratio
         for i in 2 * range(n):
             yield hsv_to_rgbhexcode(i * angle, saturation, value)
+    elif (mode == 'indexed'):
+        # Do it for 2n as for contrast and index, but do it one after
+        # the other. (Although i’m unconvinced that the second round
+        # is necessary at the moment.)
+        for i in range(n):
+            m = i % len(stroke_color_palette)
+            yield stroke_color_palette[m]
+        for i in range(n):
+            m = i % len(stroke_color_palette)
+            yield stroke_color_palette[m]
     else: # spectrum is default
         for i in 2 * range(n):
             yield hsv_to_rgbhexcode(float(i)/n, saturation, value)
