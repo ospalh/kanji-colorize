@@ -1,7 +1,8 @@
-#! /usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 ; mode: Python -*-
 
 # kanji-colorize.py processes KanjiVG data into colored stroke order diagrams
-# Copyright 2012 Cayenne Boyer
+# Copyright © 2012 Cayenne Boyer, Roland Sieker
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,40 +19,7 @@
 
 # Usage: see README file
 
-# CONFIGURATION VARIABLES
-
-# mode: 
-# * spectrum: color progresses evenly through the spectrum.  This is nice for
-#             seeing the way the kanji is put together at a glance, but has
-#             the disadvantage of using similar colors for consecutive strokes
-#             which can make it less clear which number goes with which stroke
-# * contrast: maximizes contrast among any group of consecutive strokes, by 
-#             using the golden ratio
-mode = "spectrum"
-
-# saturation and value, as numbers between 0 and 1
-saturation = 0.95
-value = 0.75
-
-# image size in pixels
-image_size = 327
-
-# rename files to use characters rather than codes; set to True or False
-character_file_names = True
-
-# END OF CONFIGURATION VARIABLES
-
-# make sure config variables are in the right format
-mode = mode.lower()
-saturation = float(saturation)
-value = float(value)
-image_size = int(image_size)
-
-# begin script
-
-import os
-import colorsys
-import re
+import os, colorsys, re
 
 def stroke_count(svg):
     'Return the number of strokes in the svg, based on occurences of "<path "'
@@ -62,42 +30,65 @@ def hsv_to_rgbhexcode(h, s, v):
     color = colorsys.hsv_to_rgb(h, s, v)
     return '#%02x%02x%02x' % tuple([i * 255 for i in color])
 
-def color_generator(n):
-    """Create an iterator that loops through n colors twice (so that they can be used
-for both strokes and stroke numbers) using the mode config variable to 
-determine what colors to produce."""
-    if (mode == "contrast"):
-        angle = 0.618033988749895 # conjugate of the golden ratio
-        for i in 2 * range(n):
-            yield hsv_to_rgbhexcode(i * angle, saturation, value)
-    else: # spectrum is default
-        for i in 2 * range(n):
-            yield hsv_to_rgbhexcode(float(i)/n, saturation, value)
 
-def color_svg(svg):
+def contrast_generator(n, options):
+    """Create an iterator that loops through n colors twice (so that they can be used
+for both strokes and stroke numbers) """
+    angle = 0.618033988749895 # conjugate of the golden ratio
+    for i in 2 * range(n):
+        yield hsv_to_rgbhexcode(i * angle, options.saturation, options.value)
+
+def spectrum_generator(n, options):
+    """Create an iterator that loops through n colors twice (so that they can be used
+for both strokes and stroke numbers) """
+    for i in 2 * range(n):
+        yield hsv_to_rgbhexcode(float(i)/n, options.saturation, options.value)
+
+
+# List of modes, so that we don’t call a non-existing function.
+mode_dict = {'spectrum' : spectrum_generator, 'contrast' : contrast_generator}
+
+def color_generator(n, options):
+    """Dispatch to the right color generation iterator, using the mode
+config variable to determine what colors to produce."""
+
+    # This will fail if the script is called with an undefined mode. I
+    # think that is acceptable behaviour. When we don’t understand
+    # what we should do, complain.
+    mode = options.mode
+    if not mode:
+        mode = 'spectrum'
+    return mode_dict[mode](n, options)
+
+
+
+def color_svg(svg, mode):
     "Color the svg according to the mode config variable"
-    color_iterator = color_generator(stroke_count(svg))
+    color_iterator = color_generator(stroke_count(svg), options)
     def color_match(match_object):
         return match_object.re.pattern + 'style="stroke:' + next(color_iterator) + '" '
     svg = re.sub('<path ', color_match, svg)
     return re.sub('<text ', color_match, svg)
 
-def resize_svg(svg):
+def resize_svg(svg, options):
     "Resize the svg according to the image_size config variable"
-    ratio = `float(image_size) / 109`
-    svg = svg.replace('109" height="109" viewBox="0 0 109 109', '{0}" height = "{0}" viewBox="0 0 {0} {0}'.format(`image_size`))
+    ratio = `float(options.size) / 109`
+    svg = svg.replace('109" height="109" viewBox="0 0 109 109', '{0}" height = "{0}" viewBox="0 0 {0} {0}'.format(`options.size`))
     svg = re.sub('(<g id="kvg:Stroke.*?)(>)', r'\1 transform="scale(' + ratio + ',' + ratio + r')"\2', svg)
     return svg
 
-def comment_copyright(svg):
+def comment_copyright(svg, options):
     "Add a comment about what this script has done to the copyright notice"
     note = """This file has been modified from the original version by the kanji-colorize 
 script (available at http://github.com/cayennes/kanji-colorize) with these 
-settings: 
-    mode: """ + mode + """
-    saturation: """ + `saturation` + """
-    value: """ + `value` + """
-    image_size: """ + `image_size` + """
+settings: """
+    if options.mode:
+        note += """
+    mode: """+ options.mode + "\n"
+    note += """
+    saturation: """ + `options.saturation` + """
+    value: """ + `options.value` + """
+    size: """ + `options.size` + """
 It remains under a Creative Commons-Attribution-Share Alike 3.0 License.
 
 The original SVG has the following copyright:
@@ -115,31 +106,79 @@ def convert_file_name(filename):
 
 # Find and set up directories
 
-if (os.path.exists('kanji')):
-    src_dir = 'kanji'
-elif (os.path.exists(os.path.join('kanjivg', 'kanji'))):
-    src_dir = os.path.join('kanjivg', 'kanji')
-elif (os.path.exists(os.path.join(os.path.pardir,'kanjivg','kanji'))):
-    src_dir = os.path.join(os.path.pardir,'kanjivg','kanji')
-
-dst_dir = 'kanji-colorize-' + mode
-if not (os.path.exists(dst_dir)):
-    os.mkdir(dst_dir)
+def kanji_dirs(in_dir=u'', out_dir=u'', mode=u''):
+    """Find the KanjiVG directory"""
+    if not in_dir:
+        if (os.path.exists('kanji')):
+            in_dir = 'kanji'
+        elif (os.path.exists(os.path.join('kanjivg', 'kanji'))):
+            in_dir = os.path.join('kanjivg', 'kanji')
+        elif (os.path.exists(os.path.join(os.path.pardir,'kanjivg','kanji'))):
+            in_dir = os.path.join(os.path.pardir,'kanjivg','kanji')
+        else:
+            # Last resort: use current directory.
+            in_dir = u'.'
+    if not out_dir:
+        out_dir = 'kanji-colorize'
+        if mode:
+            out_dir += '-' + mode
+    if not (os.path.exists(out_dir)):
+        os.mkdir(out_dir)
+    return in_dir, out_dir
    
 # Do conversions
 
-for src_filename in os.listdir(src_dir):
+def convert_all_kanji(options):
+    """Colorize all SVG by coloring the strokes of KanjiVG SVG files"""
+    src_dir, dst_dir = kanji_dirs(options.in_dir, options.out_dir,
+                                  options.mode)
+    for src_filename in os.listdir(src_dir):
     # read original svg
-    with open(os.path.join(src_dir, src_filename), 'r') as f:
-        svg = f.read()
-    # modify
-    svg = color_svg(svg)
-    svg = resize_svg(svg)
-    svg = comment_copyright(svg)
-    # write to new svg
-    if (character_file_names):
-        dst_filename = convert_file_name(src_filename)
-    else:
+        with open(os.path.join(src_dir, src_filename), 'r') as f:
+            svg = f.read()
+        # modify
+        svg = color_svg(svg, options)
+        svg = resize_svg(svg, options)
+        svg = comment_copyright(svg, options)
+        # write to new svg
         dst_filename = src_filename
-    with open(os.path.join(dst_dir, dst_filename), 'w') as f:
-        f.write(svg)
+        if options.rename:
+            dst_filename = convert_file_name(src_filename)
+        
+        with open(os.path.join(dst_dir, dst_filename), 'w') as f:
+            f.write(svg)
+
+
+if __name__ == '__main__':
+    from optparse import OptionParser
+    parser = OptionParser()
+    parser.add_option("-i", "--in-dir", dest="in_dir",
+                      help="Directory where the KanjiVG svg files are stored",
+                      metavar="INDIR")
+    parser.add_option("-o", "--out-dir", dest="out_dir",
+                      help="Directory where the colorized kanji are written to. Default is to use kanji-colorize-<MODE>",
+                      metavar="OUTDIR")
+    parser.add_option("-c", "--colors",
+                      dest="mode",
+                      help='Color selection mode. Use "spectrum" or "contrast"')
+    parser.add_option("--saturation",
+                      dest="saturation", default=0.95, type="float",
+                      help='Saturation of the strokes')
+    parser.add_option("--value",
+                      dest="value", default=0.75, type="float",
+                      help='Value of the strokes')
+    parser.add_option("-s", "--size",
+                      dest="size", default=327, type="int",
+                      help='Svg standard size.')
+    parser.add_option("--no-rename",
+                      dest="rename", action="store_false",
+                      help='Keep the ascii character names. Usual behaviour is to change the output file names to the characters themselves.')
+    parser.add_option("--rename",
+                      dest="rename", action="store_true",
+                      help='Change the output file names to the characters themselves. This is the default behaviour.')
+    (options, args) = parser.parse_args()
+    if None == options.rename:
+        options.rename = True
+    if args:
+        print 'Warning: arguments "' + args + '" are ignored.'
+    convert_all_kanji(options)
