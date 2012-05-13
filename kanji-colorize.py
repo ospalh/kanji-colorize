@@ -44,9 +44,33 @@ for both strokes and stroke numbers) """
     for i in 2 * range(n):
         yield hsv_to_rgbhexcode(float(i)/n, options.saturation, options.value)
 
+def indexed_generator(n, options):
+    """Create an iterator that loops through n colors twice (so that they can be used
+for both strokes and stroke numbers) """
+    stroke_color_palette = [
+        "#bf0909", "#bfbf09", "#09bf09", "#09bfbf", "#0909bf", "#bf09bf",
+        "#ff850c", "#85ff0c", "#0cff85", "#0c85ff", "#850cff", "#ff0c85",
+        "#bf8f2f", "#5fbf2f", "#2fbf8f", "#2f5fbf", "#8f2fbf", "#bf2f5f", 
+        "#ff0000", "#ffcc00", "#65ff00", "#00ff66", "#00cbff", "#0000ff",
+        "#cc00ff", "#ff0066",
+        "#ff6600", "#cbff00", "#00ff00", "#00ffcb", "#0066ff", "#6500ff",
+        "#ff00cb"
+        ]
+    for i in range(n):
+        m = i % len(stroke_color_palette)
+        yield stroke_color_palette[m]
+    for i in range(n):
+        # Do the loop for 2n, as for the other modes. 
+        m = i % len(stroke_color_palette)
+        yield stroke_color_palette[m]
+
 
 # List of modes, so that we don’t call a non-existing function.
-mode_dict = {'spectrum' : spectrum_generator, 'contrast' : contrast_generator}
+mode_dict = {
+    'spectrum' : spectrum_generator,
+    'contrast' : contrast_generator,
+    'indexed'  : indexed_generator
+    }
 
 def color_generator(n, options):
     """Dispatch to the right color generation iterator, using the mode
