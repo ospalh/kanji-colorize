@@ -48,14 +48,15 @@ def indexed_generator(n, options):
     """Create an iterator that loops through n colors twice (so that they can be used
 for both strokes and stroke numbers) """
     stroke_color_palette = [
-        "#bf0909", "#bfbf09", "#09bf09", "#09bfbf", "#0909bf", "#bf09bf",
-        "#ff850c", "#85ff0c", "#0cff85", "#0c85ff", "#850cff", "#ff0c85",
-        "#bf8f2f", "#5fbf2f", "#2fbf8f", "#2f5fbf", "#8f2fbf", "#bf2f5f", 
-        "#ff0000", "#ffcc00", "#65ff00", "#00ff66", "#00cbff", "#0000ff",
-        "#cc00ff", "#ff0066",
-        "#ff6600", "#cbff00", "#00ff00", "#00ffcb", "#0066ff", "#6500ff",
-        "#ff00cb"
+        "#bf0909",  "#bf6409",  "#bfbf09",#  "#64bf09",
+        "#09bf09",  # "#09bf64", 
+        "#09bfbf",  "#0964bf",  "#0909bf",  "#6409bf",  "#bf09bf",  "#bf0964", 
+        "#ff8056",  "#ffd456",  "#d4ff56", # "#80ff56",
+        "#56ff80",  # "#56ffd4",
+        "#56d4ff",  "#5680ff",  "#8056ff",  "#d456ff",  "#ff56d4",  "#ff5680", 
+        "#7f3f3f",  "#7f7f3f",  "#3f7f3f",  "#3f7f7f",  "#3f3f7f",  "#7f3f7f"
         ]
+    
     for i in range(n):
         m = i % len(stroke_color_palette)
         yield stroke_color_palette[m]
