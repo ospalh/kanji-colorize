@@ -19,7 +19,9 @@
 
 # Usage: see README file
 
-import os, colorsys, re
+import colorsys
+import os
+import re
 
 def stroke_count(svg):
     'Return the number of strokes in the svg, based on occurences of "<path "'
@@ -32,36 +34,48 @@ def hsv_to_rgbhexcode(h, s, v):
 
 
 def contrast_generator(n, options):
-    """Create an iterator that loops through n colors twice (so that they can be used
-for both strokes and stroke numbers) """
+    """
+    Loop through colors.
+
+    Create an iterator that loops through n colors twice (so that they
+    can be used for both strokes and stroke numbers)
+    """
     angle = 0.618033988749895 # conjugate of the golden ratio
     for i in 2 * range(n):
         yield hsv_to_rgbhexcode(i * angle, options.saturation, options.value)
 
 def spectrum_generator(n, options):
-    """Create an iterator that loops through n colors twice (so that they can be used
-for both strokes and stroke numbers) """
+    """
+    Loop through colors.
+
+    Create an iterator that loops through n colors twice (so that they
+    can be used for both strokes and stroke numbers)
+    """
     for i in 2 * range(n):
         yield hsv_to_rgbhexcode(float(i)/n, options.saturation, options.value)
 
 def indexed_generator(n, options):
-    """Create an iterator that loops through n colors twice (so that they can be used
-for both strokes and stroke numbers) """
+    """
+    Loop through colors.
+
+    Create an iterator that loops through n colors twice (so that they can be used
+    for both strokes and stroke numbers)
+    """
     stroke_color_palette = [
         "#bf0909",  "#bf6409",  "#bfbf09",#  "#64bf09",
-        "#09bf09",  # "#09bf64", 
-        "#09bfbf",  "#0964bf",  "#0909bf",  "#6409bf",  "#bf09bf",  "#bf0964", 
+        "#09bf09",  # "#09bf64",
+        "#09bfbf",  "#0964bf",  "#0909bf",  "#6409bf",  "#bf09bf",  "#bf0964",
         "#ff8056",  "#ffd456",  "#d4ff56", # "#80ff56",
         "#56ff80",  # "#56ffd4",
-        "#56d4ff",  "#5680ff",  "#8056ff",  "#d456ff",  "#ff56d4",  "#ff5680", 
+        "#56d4ff",  "#5680ff",  "#8056ff",  "#d456ff",  "#ff56d4",  "#ff5680",
         "#7f3f3f",  "#7f7f3f",  "#3f7f3f",  "#3f7f7f",  "#3f3f7f",  "#7f3f7f"
         ]
-    
+
     for i in range(n):
         m = i % len(stroke_color_palette)
         yield stroke_color_palette[m]
     for i in range(n):
-        # Do the loop for 2n, as for the other modes. 
+        # Do the loop for 2n, as for the other modes.
         m = i % len(stroke_color_palette)
         yield stroke_color_palette[m]
 
@@ -95,17 +109,21 @@ def color_svg(svg, mode):
     svg = re.sub('<path ', color_match, svg)
     return re.sub('<text ', color_match, svg)
 
-def resize_svg(svg, options):
-    "Resize the svg according to the image_size config variable"
-    ratio = `float(options.size) / 109`
-    svg = svg.replace('109" height="109" viewBox="0 0 109 109', '{0}" height = "{0}" viewBox="0 0 {0} {0}'.format(`options.size`))
-    svg = re.sub('(<g id="kvg:Stroke.*?)(>)', r'\1 transform="scale(' + ratio + ',' + ratio + r')"\2', svg)
-    return svg
+def set_svg_size(svg, options):
+    """
+    Set the svg size.
+
+    Set the svg size according to the image_size config variable.
+    Just set the width and height. Leave the strokes. That's what the
+    view box is about.
+    """
+    return re.sub('(\swidth|\sheight)\s*=\s*"(?:[0-9]+)"',
+                  '\\1="{0}"'.format(options.size), svg)
 
 def comment_copyright(svg, options):
     "Add a comment about what this script has done to the copyright notice"
-    note = """This file has been modified from the original version by the kanji-colorize 
-script (available at http://github.com/cayennes/kanji-colorize) with these 
+    note = """This file has been modified from the original version by the kanji-colorize
+script (available at http://github.com/cayennes/kanji-colorize) with these
 settings: """
     if options.mode:
         note += """
@@ -150,7 +168,7 @@ def kanji_dirs(in_dir=u'', out_dir=u'', mode=u''):
     if not (os.path.exists(out_dir)):
         os.mkdir(out_dir)
     return in_dir, out_dir
-   
+
 # Do conversions
 
 def convert_all_kanji(options):
@@ -163,13 +181,13 @@ def convert_all_kanji(options):
             svg = f.read()
         # modify
         svg = color_svg(svg, options)
-        svg = resize_svg(svg, options)
+        svg = set_svg_size(svg, options)
         svg = comment_copyright(svg, options)
         # write to new svg
         dst_filename = src_filename
         if options.rename:
             dst_filename = convert_file_name(src_filename)
-        
+
         with open(os.path.join(dst_dir, dst_filename), 'w') as f:
             f.write(svg)
 
@@ -181,7 +199,8 @@ if __name__ == '__main__':
                       help="Directory where the KanjiVG svg files are stored",
                       metavar="INDIR")
     parser.add_option("-o", "--out-dir", dest="out_dir",
-                      help="Directory where the colorized kanji are written to. Default is to use kanji-colorize-<MODE>",
+                      help="Directory where the colorized kanji are written " \
+                          + "to. Default is to use kanji-colorize-<MODE>",
                       metavar="OUTDIR")
     parser.add_option("-c", "--colors",
                       dest="mode",
@@ -193,17 +212,23 @@ if __name__ == '__main__':
                       dest="value", default=0.75, type="float",
                       help='Value of the strokes')
     parser.add_option("-s", "--size",
-                      dest="size", default=327, type="int",
+                      dest="size", default=240, type="int",
                       help='Svg standard size.')
     parser.add_option("--no-rename",
                       dest="rename", action="store_false",
-                      help='Keep the ascii character names. Usual behaviour is to change the output file names to the characters themselves.')
+                      help='Keep the ascii character names. Usual behaviour ' \
+                          + 'is to change the output file names to the ' \
+                          + 'characters themselves.')
     parser.add_option("--rename",
                       dest="rename", action="store_true",
-                      help='Change the output file names to the characters themselves. This is the default behaviour.')
+                      help='Change the output file names to the characters ' \
+                          + 'themselves. This is the default behaviour.')
     (options, args) = parser.parse_args()
     if None == options.rename:
         options.rename = True
     if args:
-        print 'Warning: arguments "' + args + '" are ignored.'
+        print u'Warning: arguments ',
+        for a in args:
+            print '"', unicode(a, 'utf-8'), '" ',
+        print u'are ignored.'
     convert_all_kanji(options)
