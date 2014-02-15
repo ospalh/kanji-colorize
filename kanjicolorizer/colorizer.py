@@ -265,6 +265,80 @@ kvg:type CDATA #IMPLIED >
 ]>
 <?xml-stylesheet type="text/css" href="_kanji_style.css"?>
 '''
+        self.svg_style_data = u'''
+<![CDATA[
+.stroke_path.stroke_num1 {stroke: #bf0909;}
+.stroke_number.stroke_num1 {fill: #bf0909;}
+.stroke_path.stroke_num2 {stroke: #bf6409;}
+.stroke_number.stroke_num2 {fill: #bf6409;}
+.stroke_path.stroke_num3 {stroke: #bfbf09;}
+.stroke_number.stroke_num3 {fill: #bfbf09;}
+.stroke_path.stroke_num4 {stroke: #09bf09;}
+.stroke_number.stroke_num4 {fill: #09bf09;}
+.stroke_path.stroke_num5 {stroke: #09bfbf;}
+.stroke_number.stroke_num5 {fill: #09bfbf;}
+.stroke_path.stroke_num6 {stroke: #0909bf;}
+.stroke_number.stroke_num6 {fill: #0909bf;}
+.stroke_path.stroke_num7 {stroke: #bf0964;}
+.stroke_number.stroke_num7 {fill: #bf0964;}
+.stroke_path.stroke_num8 {stroke: #ff8056;}
+.stroke_number.stroke_num8 {fill: #ff8056;}
+.stroke_path.stroke_num9 {stroke: #56d4ff;}
+.stroke_number.stroke_num9 {fill: #56d4ff;}
+.stroke_path.stroke_num10 {stroke: #5680ff;}
+.stroke_number.stroke_num10 {fill: #5680ff;}
+.stroke_path.stroke_num11 {stroke: #8056ff;}
+.stroke_number.stroke_num11 {fill: #8056ff;}
+.stroke_path.stroke_num12 {stroke: #d456ff;}
+.stroke_number.stroke_num12 {fill: #d456ff;}
+.stroke_path.stroke_num13 {stroke: #ff56d4;}
+.stroke_number.stroke_num13 {fill: #ff56d4;}
+.stroke_path.stroke_num14 {stroke: #ff5680;}
+.stroke_number.stroke_num14 {fill: #ff5680;}
+.stroke_path.stroke_num15 {stroke: #7f3f3f;}
+.stroke_number.stroke_num15 {fill: #7f3f3f;}
+.stroke_path.stroke_num16 {stroke: #7f7f3f;}
+.stroke_number.stroke_num16 {fill: #7f7f3f;}
+.stroke_path.stroke_num17 {stroke: #3f7f3f;}
+.stroke_number.stroke_num17 {fill: #3f7f3f;}
+.stroke_path.stroke_num18 {stroke: #3f7f7f;}
+.stroke_number.stroke_num18 {fill: #3f7f7f;}
+.stroke_path.stroke_num19 {stroke: #3f3f7f;}
+.stroke_number.stroke_num19 {fill: #3f3f7f;}
+.stroke_path.stroke_num20 {stroke: #7f3f7f;}
+.stroke_number.stroke_num20 {fill: #7f3f7f;}
+.stroke_path.stroke_num21 {stroke: #bf0909;}
+.stroke_number.stroke_num21 {fill: #bf0909;}
+.stroke_path.stroke_num22 {stroke: #bf6409;}
+.stroke_number.stroke_num22 {fill: #bf6409;}
+.stroke_path.stroke_num23 {stroke: #bfbf09;}
+.stroke_number.stroke_num23 {fill: #bfbf09;}
+.stroke_path.stroke_num24 {stroke: #09bf09;}
+.stroke_number.stroke_num24 {fill: #09bf09;}
+.stroke_path.stroke_num25 {stroke: #09bfbf;}
+.stroke_number.stroke_num25 {fill: #09bfbf;}
+.stroke_path.stroke_num26 {stroke: #0964bf;}
+.stroke_number.stroke_num26 {fill: #0964bf;}
+.stroke_path.stroke_num27 {stroke: #0909bf;}
+.stroke_number.stroke_num27 {fill: #0909bf;}
+.stroke_path.stroke_num28 {stroke: #6409bf;}
+.stroke_number.stroke_num28 {fill: #6409bf;}
+.stroke_path.stroke_num29 {stroke: #bf09bf;}
+.stroke_number.stroke_num29 {fill: #bf09bf;}
+.stroke_path.stroke_num30 {stroke: #bf0909;}
+.stroke_number.stroke_num30 {fill: #bf0909;}
+.stroke_path.stroke_num31 {stroke: #bf6409;}
+.stroke_number.stroke_num31 {fill: #bf6409;}
+.stroke_path.stroke_num32 {stroke: #bfbf09;}
+.stroke_number.stroke_num32 {fill: #bfbf09;}
+.stroke_path.stroke_num33 {stroke: #09bf09;}
+.stroke_number.stroke_num33 {fill: #09bf09;}
+.stroke_path.stroke_num34 {stroke: #09bfbf;}
+.stroke_number.stroke_num34 {fill: #09bfbf;}
+.stroke_path.stroke_num35 {stroke: #0909bf;}
+.stroke_number.stroke_num35 {fill: #0909bf;}
+]]>'''
+
 
     def _init_parser(self):
         r"""
@@ -610,7 +684,14 @@ kvg:type CDATA #IMPLIED >
         script_el.set('type', 'text/ecmascript')
         script_el.set('{{{ns}}}href'.format(ns=xlink_ns), '_kanji_script.js')
         self.svg.set('onload', 'init(evt)')
-        # Now add the classes
+        defs_el = ET.Element(
+            '{{{ns}}}defs'.format(ns=svg_ns))
+        style_el = ET.SubElement(
+            defs_el, '{{{ns}}}style'.format(ns=svg_ns),
+             attrib={'type': 'text/css'})
+        style_el.text = self.svg_style_data
+        self.svg.insert(0, defs_el)
+        # now add the classes
         for path_el in self.svg.getiterator('{{{ns}}}path'.format(ns=svg_ns)):
             try:
                 id_ = path_el.get('id')
