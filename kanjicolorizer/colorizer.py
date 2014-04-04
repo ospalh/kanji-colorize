@@ -221,7 +221,7 @@ class KanjiColorizer(object):
         self.svg_header = u'''<?xml version="1.0" encoding="UTF-8"?>
 <!--
 This file has been modified from the original version by the kanji_colorize.py
-script (available at http://github.com/cayennes/kanji-colorize) with these
+script (available at http://github.com/ospalh/kanji-colorize) with these
 settings:
     mode: {mode}
     saturation: {saturation}
@@ -229,7 +229,7 @@ settings:
 It remains under a Creative Commons-Attribution-Share Alike 3.0 License.
 
 The original SVG has the following copyright:
-Copyright (C) 2009/2010/2011 Ulrich Apel.
+Copyright © 2009–2011 Ulrich Apel.
 This work is distributed under the conditions of the Creative Commons
 Attribution-Share Alike 3.0 Licence. This means you are free:
 * to Share - to copy, distribute and transmit the work
