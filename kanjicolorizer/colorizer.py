@@ -339,7 +339,11 @@ kvg:type CDATA #IMPLIED >
 .stroke_number.stroke_num35 {fill: #ff8056;}
 
 ]]>'''
-
+        self.marker_attributes = {
+            'id': 'StartMarker', 'viewBox': '0 0 2 2', 'markerWidth': '1.5',
+            'markerHeight': '1.5'}
+        self.marker_circle_attributes = {
+            'cx': '0', 'cy': '0', 'r': '1', 'fill': 'red'}
 
     def _init_parser(self):
         r"""
@@ -397,6 +401,9 @@ kvg:type CDATA #IMPLIED >
                         '(default: %(default)s)')
         self._parser.add_argument('-o', '--output-directory',
                     default='colorized-kanji')
+        self._parser.add_argument(
+            '-m', '--markers', action="store_true", default=False,
+            dest="markers")
 
     # Public methods
 
@@ -692,6 +699,17 @@ kvg:type CDATA #IMPLIED >
              attrib={'type': 'text/css'})
         style_el.text = self.svg_style_data
         self.svg.insert(0, defs_el)
+        if self.settings.markers:
+            marker_el = ET.SubElement(
+                defs_el, '{{{ns}}}marker'.format(ns=svg_ns),
+                attrib=self.marker_attributes)
+            marker_circle_el = ET.SubElement(
+                marker_el, '{{{ns}}}circle'.format(ns=svg_ns),
+                attrib=self.marker_circle_attributes)
+        self.svg.insert(0, defs_el)
+        # Add the marker code to the top group.
+        self.svg.find('{{{ns}}}g'.format(ns=svg_ns)).set(
+            'marker-start', 'url(#StartMarker)')
         # now add the classes
         for path_el in self.svg.getiterator('{{{ns}}}path'.format(ns=svg_ns)):
             try:
