@@ -228,6 +228,8 @@ settings:
     value: {value}
 It remains under a Creative Commons-Attribution-Share Alike 3.0 License.
 
+Copyright © 2014 Roland Sieker <ospalh@gmail.com>
+
 The original SVG has the following copyright:
 Copyright © 2009–2011 Ulrich Apel.
 This work is distributed under the conditions of the Creative Commons
@@ -299,44 +301,44 @@ kvg:type CDATA #IMPLIED >
 .stroke_number.stroke_num15 {fill: #3f7f7f;}
 .stroke_path.stroke_num16 {stroke: #3f3f7f;}
 .stroke_number.stroke_num16 {fill: #3f3f7f;}
-.stroke_path.stroke_num17 {stroke: #7f3f7f;}
-.stroke_number.stroke_num17 {fill: #7f3f7f;}
-.stroke_path.stroke_num18 {stroke: #bf0909;}
-.stroke_number.stroke_num18 {fill: #bf0909;}
-.stroke_path.stroke_num19 {stroke: #bf6409;}
-.stroke_number.stroke_num19 {fill: #bf6409;}
-.stroke_path.stroke_num20 {stroke: #bfbf09;}
-.stroke_number.stroke_num20 {fill: #bfbf09;}
-.stroke_path.stroke_num21 {stroke: #09bf09;}
-.stroke_number.stroke_num21 {fill: #09bf09;}
-.stroke_path.stroke_num22 {stroke: #09bfbf;}
-.stroke_number.stroke_num22 {fill: #09bfbf;}
-.stroke_path.stroke_num23 {stroke: #0964bf;}
-.stroke_number.stroke_num23 {fill: #0964bf;}
-.stroke_path.stroke_num24 {stroke: #0909bf;}
-.stroke_number.stroke_num24 {fill: #0909bf;}
-.stroke_path.stroke_num25 {stroke: #6409bf;}
-.stroke_number.stroke_num25 {fill: #6409bf;}
-.stroke_path.stroke_num26 {stroke: #bf09bf;}
-.stroke_number.stroke_num26 {fill: #bf09bf;}
-.stroke_path.stroke_num27 {stroke: #bf0909;}
-.stroke_number.stroke_num27 {fill: #bf0909;}
-.stroke_path.stroke_num28 {stroke: #bf6409;}
-.stroke_number.stroke_num28 {fill: #bf6409;}
-.stroke_path.stroke_num29 {stroke: #bfbf09;}
-.stroke_number.stroke_num29 {fill: #bfbf09;}
-.stroke_path.stroke_num30 {stroke: #09bf09;}
-.stroke_number.stroke_num30 {fill: #09bf09;}
-.stroke_path.stroke_num31 {stroke: #09bfbf;}
-.stroke_number.stroke_num31 {fill: #09bfbf;}
-.stroke_path.stroke_num32 {stroke: #0909bf;}
-.stroke_number.stroke_num32 {fill: #0909bf;}
-.stroke_path.stroke_num33 {stroke: #bf0964;}
-.stroke_number.stroke_num33 {fill: #bf0964;}
+.stroke_path.stroke_num17 {stroke: #bf0909;}
+.stroke_number.stroke_num17 {fill: #bf0909;}
+.stroke_path.stroke_num18 {stroke: #bf6409;}
+.stroke_number.stroke_num18 {fill: #bf6409;}
+.stroke_path.stroke_num19 {stroke: #bfbf09;}
+.stroke_number.stroke_num19 {fill: #bfbf09;}
+.stroke_path.stroke_num20 {stroke: #09bf09;}
+.stroke_number.stroke_num20 {fill: #09bf09;}
+.stroke_path.stroke_num21 {stroke: #09bfbf;}
+.stroke_number.stroke_num21 {fill: #09bfbf;}
+.stroke_path.stroke_num22 {stroke: #0964bf;}
+.stroke_number.stroke_num22 {fill: #0964bf;}
+.stroke_path.stroke_num23 {stroke: #0909bf;}
+.stroke_number.stroke_num23 {fill: #0909bf;}
+.stroke_path.stroke_num24 {stroke: #6409bf;}
+.stroke_number.stroke_num24 {fill: #6409bf;}
+.stroke_path.stroke_num25 {stroke: #bf09bf;}
+.stroke_number.stroke_num25 {fill: #bf09bf;}
+.stroke_path.stroke_num26 {stroke: #bf0909;}
+.stroke_number.stroke_num26 {fill: #bf0909;}
+.stroke_path.stroke_num27 {stroke: #bf6409;}
+.stroke_number.stroke_num27 {fill: #bf6409;}
+.stroke_path.stroke_num28 {stroke: #bfbf09;}
+.stroke_number.stroke_num28 {fill: #bfbf09;}
+.stroke_path.stroke_num29 {stroke: #09bf09;}
+.stroke_number.stroke_num29 {fill: #09bf09;}
+.stroke_path.stroke_num30 {stroke: #09bfbf;}
+.stroke_number.stroke_num30 {fill: #09bfbf;}
+.stroke_path.stroke_num31 {stroke: #0909bf;}
+.stroke_number.stroke_num31 {fill: #0909bf;}
+.stroke_path.stroke_num32 {stroke: #bf0964;}
+.stroke_number.stroke_num32 {fill: #bf0964;}
+.stroke_path.stroke_num33 {stroke: #ff8056;}
+.stroke_number.stroke_num33 {fill: #ff8056;}
 .stroke_path.stroke_num34 {stroke: #ff8056;}
 .stroke_number.stroke_num34 {fill: #ff8056;}
-.stroke_path.stroke_num35 {stroke: #ff8056;}
-.stroke_number.stroke_num35 {fill: #ff8056;}
+.stroke_path.stroke_num35 {stroke: #56d4ff;}
+.stroke_number.stroke_num35 {fill: #56d4ff;}
 
 ]]>'''
         self.marker_attributes = {
