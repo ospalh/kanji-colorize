@@ -335,10 +335,10 @@ kvg:type CDATA #IMPLIED >
 .stroke_number.stroke_num32 {fill: #bf0964;}
 .stroke_path.stroke_num33 {stroke: #ff8056;}
 .stroke_number.stroke_num33 {fill: #ff8056;}
-.stroke_path.stroke_num34 {stroke: #ff8056;}
-.stroke_number.stroke_num34 {fill: #ff8056;}
-.stroke_path.stroke_num35 {stroke: #56d4ff;}
-.stroke_number.stroke_num35 {fill: #56d4ff;}
+.stroke_path.stroke_num34 {stroke: #56d4ff;}
+.stroke_number.stroke_num34 {fill: #56d4ff;}
+.stroke_path.stroke_num35 {stroke: #8056ff;}
+.stroke_number.stroke_num35 {fill: #8056ff;}
 
 ]]>'''
         self.marker_attributes = {
